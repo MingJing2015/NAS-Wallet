@@ -1,0 +1,28 @@
+<%- layout('layout') %>
+<div>
+    <h3><%- title %></h3>
+    <div class="row">
+    <form action="/forms/edit" method="post" class="col-xs-6">
+        <input type="hidden" name="_id" value="<%= data._id %>" />
+        <div class="form-group">
+            <label for="FirstName">First Name:</label>
+            <input name="FirstName" value="<%= data.FirstName %>" 
+            class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="LastName">Last Name:</label>
+            <input name="LastName" value="<%= data.LastName %>" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="School">School:</label>
+            <input name="School" value="<%= data.School %>" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="StartDate">Start Date:</label>
+            <input name="StartDate" value="<%= data.StartDate %>" class="form-control" />
+        </div>
+        <input type="submit" value="Update Student" class="btn btn-success" />
+        <a href="/forms/list" class="btn btn-success">Cancel</a>
+    </form>
+    </div>
+</div>

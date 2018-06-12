@@ -1,0 +1,28 @@
+<%- layout('layout') %>
+<div>
+    <h3><%- title %></h3>
+    <h4>Are you sure you want to delete the following user?</h4>
+    <table>
+        <tr>
+            <td>First Name: </td>
+            <td><%= data.FirstName %></td>
+        </tr>
+        <tr>
+            <td>Last Name: </td>
+            <td><%= data.LastName %></td>
+        </tr>
+        <tr>
+            <td>School: </td>
+            <td><%= data.School %></td>
+        </tr>
+        <tr>
+            <td>Start Date: </td>
+            <td><%= data.StartDate %></td>
+        </tr>
+    </table>
+    <form method="post" action="/forms/delete" >
+        <input type="hidden" name="_id" value="<%= data._id %>" />
+        <input type="submit" value="Delete" class="btn btn-danger"/>
+        <a href="/forms/list" class="btn btn-success">Cancel</a>
+    </form>
+</div>

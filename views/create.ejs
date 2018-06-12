@@ -1,0 +1,17 @@
+<%- layout('layout') %>
+<div>
+    <h3><%- title %></h3>
+    <form class="form-inline" method="post" action="/forms/student">
+        <div class="form-group">
+            <input name="FirstName" placeholder="First Name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <input name="LastName" placeholder="Last Name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <input name="School" placeholder="School" class="form-control" />
+        </div>
+        <input type="submit" value="Add Student" class="btn btn-success" />
+        <a href="/forms/list" class="btn btn-success">Cancel</a>
+    </form>
+</div>

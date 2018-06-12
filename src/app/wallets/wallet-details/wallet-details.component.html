@@ -1,0 +1,227 @@
+<div class="container">
+    <div class="form-group pull-right col-lg-2 col-md-2 col-sm-2" style="padding-top: 12px;">
+        <select class="form-control" id="net" required [(ngModel)]="netType" (change)="onNetChange()" name='net'>
+            <option *ngFor="let item1 of netTypeArr" [value]="item1.value">{{item1.name}}</option>
+        </select>
+    </div>
+
+    <a id="logo">
+        <img src="assets/imgs/logo-b.png">
+    </a>
+</div>
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <img alt="Nebulas" src="assets/imgs/icon_19.png">
+            </a>
+            <a class="navbar-brand" href="#">NAS Wallet Library</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li *ngFor="let item of menuMyItems" class={{item.active}}>
+                    <a routerLink={{item.path}}{{item.parameterID}}{{item.random}} routerLinkActive="active fluffy">{{item.linkName}}</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class='active'>
+                    <a routerLink="/WalletDetails" routerLinkActive="active-link">
+                        <span class="glyphicon glyphicon-usd"></span> Transactions</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a routerLink="/CardList" routerLinkActive="active fluffy">
+                        <span class="glyphicon glyphicon-list"></span> Wallets</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3">
+            <h3>Select wallet files</h3>
+            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader"
+                class="well my-drop-zone">
+                <strong>
+                    <h4>
+                        <span class="glyphicon glyphicon-screenshot"></span>&nbsp;&nbsp;Drop wallet files here
+                        <br />(Drop Zone) </h4>
+                </strong>
+            </div>
+            <label for="file-upload" class="custom-file-upload col-md-12 col-lg-12 col-sm-12 col-xs-12" style="padding: 15px;">
+                &nbsp;
+                <span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;&nbsp;Click here
+                <br /> to select wallet files
+            </label>
+            <input id="file-upload" type="file" ng2FileSelect [uploader]="uploader" multiple name="files[]" />
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+            <div *ngIf="uploader.queue.length" class="pull-right">
+                <button type="button" class="btn btn-danger btn-xs" (click)="onClearAll()">
+                    <span class="glyphicon glyphicon-trash"></span> Remove all
+                </button>
+            </div>
+            <h4>Listing wallets</h4>
+            <p>Queue length: {{ uploader?.queue?.length }}</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th width="50%">File Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of uploader.queue">
+                        <td>
+                            <strong>{{ item?.file?.name }}</strong>
+                        </td>
+                        <td class="text-center">
+                            <span *ngIf="item.isSuccess">
+                                <i class="glyphicon glyphicon-ok"></i>
+                            </span>
+                            <span *ngIf="item.isCancel">
+                                <i class="glyphicon glyphicon-ban-circle"></i>
+                            </span>
+                            <span *ngIf="item.isError">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </span>
+                        </td>
+                        <td nowrap>
+                            <button type="button" class="btn btn-default btn-xs" (click)="onSelectFrom(item?._file)">
+                                <span class="glyphicon glyphicon-log-out"></span> Select From &nbsp;&nbsp;&nbsp;
+                            </button>
+                            <button type="button" class="btn btn-info btn-xs" (click)="onSelectTo(item?._file)">
+                                <span class="glyphicon glyphicon-log-in"></span> Select To
+                            </button>
+                            <button type="button" class="btn btn-warning btn-xs" (click)="onRemoveOneFile(item)">
+                                <span class="glyphicon glyphicon glyphicon-remove"></span> Remove
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br />
+
+    <div class="col-lg-12 col-md-12 col-sm-12  horizontal-center-row">
+        <div *ngIf="fromAddress" class="row">
+            <div class="form-group col-lg-10 col-md-10 col-sm-10">
+                <label for="pay-from">From Address</label>
+                <input class="form-control" name="pay-from" [(ngModel)]="fromAddress" placeholder="From Address" />
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <button type="button" class="btn btn-info btn-s" (click)="onUnlockAccount()">
+                    1. Unlock Account
+                </button>
+            </div>
+        </div>
+
+        <div *ngIf="fromAddress" class="row">
+            <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                <label for="pay-pw">From Wallet Password</label>
+                <input type="password" class="form-control " name="pay-pw" [(ngModel)]="password" placeholder="Your Wallet Address" />
+            </div>
+            <div class="form-group col-lg-6 col-md-6 col-sm-6" style="display:online;">
+                <label for="pay-balance">Balance (NAS)</label>
+                <input class="form-control" readonly name="pay-balance" [(ngModel)]="balance" placeholder="" />
+            </div>
+        </div>
+
+        <div *ngIf="toAddress" class="row">
+            <div class="form-group col-lg-10 col-md-10 col-sm-10">
+                <label for="card-CardName">To Address</label>
+                <input class="form-control" name="card-CardName" [(ngModel)]="toAddress" placeholder="to Address" />
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <button type="button" class="btn btn-primary btn-s" (click)="onCreateSignData()">
+                    2. Sign Transaction
+                </button>
+            </div>
+            
+
+        </div>
+        <div *ngIf="toAddress" class="row">
+            <div class="form-group col-lg-6 col-md-6 col-sm-6" style="display:online;">
+                <label for="pay-value">Pay Value / Amount to Send (NAS)</label>
+                <input class="form-control" name="pay-value" [(ngModel)]="amount" placeholder="Amount" />
+            </div>
+            <div class="form-group  col-lg-6 col-md-6 col-sm-6" style="display:online;">
+                <label for="pay-nonce">Nonce</label>
+                <input class="form-control" readonly name="pay-nonce" [(ngModel)]="nonce" placeholder="" />
+            </div>
+        </div>
+
+
+        <div *ngIf="toAddress" class="row">
+            <!--
+            <div class="form-group  col-lg-6 col-md-6 col-sm-6">
+                <label for="pay-limit">Gas Limit</label>
+                <input class="form-control" name="pay-limit" [(ngModel)]="gasLimit" placeholder="" />
+            </div>
+            -->
+            <div class="form-group  col-lg-10 col-md-10 col-sm-10">
+                <label for="gasPrice">Gas Price ( 1 NAS = 1EWei = 10 18 Wei )</label>
+                <input class="form-control" name="gasPrice" [(ngModel)]="gasPrice" placeholder="" />
+            </div>
+            <div *ngIf="mTxHash" class="col-lg-2 col-md-2 col-sm-2">
+                <button type="button" class="btn btn-success btn-s" (click)="onSendTransaction()">
+                    3. Send Transaction
+                </button>
+            </div>
+
+        </div>
+        <div class="row">
+            <div *ngIf="mTxHash"  class="form-group  col-lg-6 col-md-6 col-sm-6">
+                <label for="pay-limit">Signed Transaction</label>
+                <textarea class="form-control" rows="6" cols="50" readonly>{{mTxHash}}</textarea>
+            </div>
+            <div *ngIf="Receipt"  class="form-group  col-lg-6 col-md-6 col-sm-6"> 
+                <label for="gasPrice">Transaction Receipt</label>
+                <textarea class="form-control" rows="6" cols="50" readonly>{{Receipt}}</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--
+    <div class="col-md-5 col-md-offset-0">
+        <div *ngIf="selectedCard" class="row">
+            <form class="col-md-12">
+
+                <div class="form-group">
+                    <label for="card-CardAddress">From Address</label>
+                    <input class="form-control" name="card-CardAddress" [(ngModel)]="address" placeholder="钱包地址" />
+                </div>
+                <div class="form-group">
+                    <label for="card-Balance">Balance</label>
+                    <input class="form-control" name="card-Balance" [(ngModel)]="balance" placeholder="" />
+                </div>
+                
+                <div class="form-group invisible" >
+                    <label for="card-Nonce">交易次数</label>
+                    <input class="form-control" name="card-Nonce" [(ngModel)]="nonce" placeholder="" />
+                </div>
+                <div class="form-group invisible" >
+                        <label for="toAddress">To Address</label>
+                        <input class="form-control" name="toAddress" [(ngModel)]="toAddress" placeholder="to wallet Address" />
+                </div>
+            </form>
+        </div>
+    </div>
+-->
