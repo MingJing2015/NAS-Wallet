@@ -6,8 +6,8 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class ContractService {
 
-    private contractUrl = '/api/contracts';
-    //private contractUrl = 'http://127.0.0.1:3000/api/contracts';       // For local debug, need open CORS on Chrome 
+    //private contractUrl = '/api/contracts';
+    private contractUrl = 'http://127.0.0.1:3000/api/contracts';       // For local debug, need open CORS on Chrome 
 
     constructor(private http: HttpClient) { }
 
@@ -61,7 +61,4 @@ export class ContractService {
             .then(response => response)
             .catch(this.handleError);
     }
-
-
-
 }

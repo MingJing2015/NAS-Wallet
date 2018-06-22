@@ -18,8 +18,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Injectable()
 export class CardService {
 
-    private cardsUrl = '/api/cards';                            // For Internet !!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //private cardsUrl = 'http://127.0.0.1:3000/api/cards';     // For local debug, need open CORS on Chrome 
+    //private cardsUrl = '/api/cards';                            // For Internet !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private cardsUrl = 'http://127.0.0.1:3000/api/cards';     // For local debug, need open CORS on Chrome 
 
     constructor (private http: HttpClient) {}
 

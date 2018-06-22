@@ -1,6 +1,6 @@
 <div class="container">
     <div class="form-group pull-right col-lg-2 col-md-2 col-sm-2" style="padding-top: 12px;">
-        <select class="form-control" id="net" required [(ngModel)]="netType" (change)="onNetChange()" name='net'>
+        <select class="form-control" id="net" disabled required [(ngModel)]="netType" (change)="onNetChange()" name='net'>
             <option *ngFor="let item1 of netTypeArr" [value]="item1.value">{{item1.name}}</option>
         </select>
     </div>

@@ -29,7 +29,8 @@ export class RemoteService {
 
         //let url  = this.site + 'api/students';
 
-        let url = 'https://testnet.nebulas.io/v1/user/nebstate';
+        let url = 'https://mainnet.nebulas.io/v1/user/nebstate';
+        //let url = 'https://testnet.nebulas.io/v1/user/nebstate';
         //let url =  'http://localhost:8685/v1/user/nebstate';
 
         console.log(url);

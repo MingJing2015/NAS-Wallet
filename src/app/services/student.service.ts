@@ -18,8 +18,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Injectable()
 export class StudentService {
 
-    private studentsUrl = '/api/students';                              // For internet  !!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //private studentsUrl = 'http://127.0.0.1:3000/api/students';       // For local debug, need open CORS on Chrome 
+    //private studentsUrl = '/api/students';                              // For internet  !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private studentsUrl = 'http://127.0.0.1:3000/api/students';       // For local debug, need open CORS on Chrome 
 
     constructor(private http: HttpClient) { }
 
@@ -54,12 +54,13 @@ export class StudentService {
 
 
     // 1. 账户解锁
-    postAccount(file: any): Promise<Student | any> {
+    postAccount(data: any): Promise<Student | any> {
 
-        console.log(file);
-        console.log(file.name);
+        //var obj = JSON.parse(data);
+        console.log(data.file);
+        console.log(data.pw);
 
-        return this.http.post(this.studentsUrl, file)
+        return this.http.post(this.studentsUrl, data)
             .toPromise()
             .then(response => response as Student)
             .catch(this.handleError);

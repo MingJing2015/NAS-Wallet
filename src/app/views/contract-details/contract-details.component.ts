@@ -18,7 +18,7 @@ export class ContractDetailsComponent implements OnInit {
         { value: '1', name: "Local nodes" },
         { value: '2', name: "Mainnet" },
     ];
-    netType: string = '0';
+    netType: string = '2';
 
     // For display Contract Info
     // 1. 银行保险柜合约
@@ -33,8 +33,16 @@ export class ContractDetailsComponent implements OnInit {
     // 3. Order 用户信息合约 contract.txt
     //  ["4", "7b571d64d9387826d7b5dc16d9c18b49f46aaac4da8a08000d5868a87503f8bc", "iPhone 49"]
 
-    contractAddress: string = 'n1ohyV5xeVwMTCNm6sFLVKKNvdE5Uv6uDpS';     // From Address: n1QvdfomX24brtcBrBypPDcPvt9Qwm9UBM9   created, Map index by orderID
-    contractTxhash:  string = '7b571d64d9387826d7b5dc16d9c18b49f46aaac4da8a08000d5868a87503f8bc';
+    //contractAddress: string = 'n1ohyV5xeVwMTCNm6sFLVKKNvdE5Uv6uDpS';     // From Address: n1QvdfomX24brtcBrBypPDcPvt9Qwm9UBM9   created, Map index by orderID
+    //contractTxhash:  string = '7b571d64d9387826d7b5dc16d9c18b49f46aaac4da8a08000d5868a87503f8bc';
+
+    // index foreach contract at testNet 
+    //contractAddress: string = 'n1oTKAexjsq9aLea79XawUkJijrRmWNvf5U';     // From Address: n1QvdfomX24brtcBrBypPDcPvt9Qwm9UBM9   created, Map index by orderID
+    //contractTxhash:  string = 'c47cd1e3050c1d44c722104b2069556dbb95ae85998a04f4172e60885cba2497';
+   
+   // index foreach contract at MainNet 
+   contractAddress: string = 'n1iv8umQDW3NDu5HJL1stVjaBWiPpFmmmVV';     // From Address: n1QvdfomX24brtcBrBypPDcPvt9Qwm9UBM9   created, Map index by orderID
+   contractTxhash:  string = '12410a945cea5ec688d11afa216876426dc99f85906c2239058aa79c589eb076';
 
     contractType: string;save
     contractBalance: string;
@@ -45,7 +53,7 @@ export class ContractDetailsComponent implements OnInit {
     fromAddress: string;
     nonce:       string;
     fromBalance: string;
-    password:    string = "Nas20180429";
+    password:    string;
 
     testResult: string;
 
@@ -57,9 +65,10 @@ export class ContractDetailsComponent implements OnInit {
     newFromNonce: string;
 
     //function:  string = 'save';
-    function:  string = 'readByID';
-    //arguments: string = '["4", "7b571d64d9387826d7b5dc16d9c18b49f46aaac4da8a08000d5868a87503f8bc", "iPhone 49"]';  //can not has space !! because of will be splited
-    arguments: string = '["1"]';   //'[0]';
+    function:  string = 'read';
+    //function:  string = 'len';
+    //arguments: string = '["1", "7b571d64d9387826d7b5dc16d9c18b49f46aaac4da8a08000d5868a87503f8bc", "iPhone 01"]';  //can not has space !! because of will be splited
+    arguments: string = '["1"]';   
 
     hashResult: string;
 
@@ -69,15 +78,15 @@ export class ContractDetailsComponent implements OnInit {
 
     ) { }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
+
+    // #2. Check Contract
     checkContractState() {
 
         console.log("1. 查看合约信息 ........ " + this.contractAddress);
-
         if (!this.contractAddress) {
-            alert(" Please input Contract Address!");
+            alert(" Please input Contract Address!");  // ???????????????? Good !!
             return;
         }
 
@@ -95,12 +104,13 @@ export class ContractDetailsComponent implements OnInit {
         });
     }
 
+    // Search Contract
     SearchContract() {
 
         console.log("2. 查询合约信息 ........ " + this.contractAddress);
 
-        if (!this.contractAddress) {
-            alert(" Please input Contract Address!");
+        if (!this.contractTxhash) {
+            alert(" Please input Contract Txhash!");
             return;
         }
 
@@ -108,22 +118,6 @@ export class ContractDetailsComponent implements OnInit {
 
             this.contractCode = atob(result.data);
             console.log(this.contractCode);
-
-            //console.log(result);
-            //this.contractCode = result;
-
-
-            /*
-            let account_Result = JSON.parse(cardBalance._body);
-            var dataBalance = Number(account_Result.result.balance) / 1000000000000000000.0;
-
-            if (!isNaN(dataBalance))
-                this.contractBalance = dataBalance.toString();
-            else
-                this.contractBalance = '';
-
-            this.contractType = account_Result.result.type;
-            */
         });
     }
 
@@ -138,18 +132,30 @@ export class ContractDetailsComponent implements OnInit {
 
         this.contractService.getContracts(this.testResult).then((result: any) => {
 
+            //this.hashResult = JSON.stringify(result);
             console.log(result);
-            this.hashResult = JSON.stringify(result);
+            switch (result.status) {
+                case 0:
+                    this.hashResult = "0: 交易失败(failed)";
+                    break;
+                case 1:
+                    this.hashResult = "1: 交易成功(success)";
+                    break;
+                case 2:
+                    this.hashResult = "2: 交易待定(pending) - 可稍后继续点击 Check TX Status 按钮查看";
+                    break;
+            }
         });
     }
 
 
+    // #4. 测试合约
     testContract() {
 
         console.log("4. 测试合约 start........ " + this.contractAddress);
 
-        if (!this.contractAddress) {
-            alert(" Please input Contract Address!");
+        if (!this.contractAddress || !this.password || !this.fromAddress) {
+            alert(" Please select wallet file, input Contract Address and password!");
             return;
         }
 
@@ -234,7 +240,7 @@ export class ContractDetailsComponent implements OnInit {
     }
 
 
-    // Selected file button
+    // #1. Selected file button
     handleInputChange(e) {
 
         this.jsonAddressFile = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
@@ -275,7 +281,5 @@ export class ContractDetailsComponent implements OnInit {
 
             this.nonce = result.nonce
         });
-
     }
-
 }

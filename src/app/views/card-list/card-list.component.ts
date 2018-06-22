@@ -43,7 +43,7 @@ export class CardListComponent implements OnInit {
         { value: '2', name: "Mainnet" },
     ];
 
-    netType: string = '0';
+    netType: string = '2';
 
     Chain_ID: number;
     Height: string;
@@ -109,6 +109,7 @@ export class CardListComponent implements OnInit {
 
     showNetState() {
 
+        // ????? different Net, parameter ????? 
         //this.remoteService.getNetState().then((netState: NetState) => {
         this.remoteService.getNetState()
             //.then((netState: PwdChangeStatusModel) => this.netState = netState)

@@ -1,6 +1,6 @@
 <div class="container">
     <div class="form-group pull-right col-lg-2 col-md-2 col-sm-2" style="padding-top: 12px;">
-        <select class="form-control" id="net" required [(ngModel)]="netType" (change)="onNetChange()" name='net'>
+        <select class="form-control" id="net" disabled required [(ngModel)]="netType" (change)="onNetChange()" name='net'>
             <option *ngFor="let item1 of netTypeArr" [value]="item1.value">{{item1.name}}</option>
         </select>
     </div>
@@ -107,7 +107,7 @@
                             </span>
                         </td>
                         <td nowrap>
-                            <button type="button" class="btn btn-default btn-xs" (click)="onSelectFrom(item?._file)">
+                            <button type="button" class="btn btn-primary btn-xs" (click)="onSelectFrom(item?._file)">
                                 <span class="glyphicon glyphicon-log-out"></span> Select From &nbsp;&nbsp;&nbsp;
                             </button>
                             <button type="button" class="btn btn-info btn-xs" (click)="onSelectTo(item?._file)">
@@ -130,7 +130,7 @@
                 <input class="form-control" name="pay-from" [(ngModel)]="fromAddress" placeholder="From Address" />
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2">
-                <button type="button" class="btn btn-info btn-s" (click)="onUnlockAccount()">
+                <button type="button" class="btn btn-primary btn-s" (click)="onUnlockAccount()">
                     1. Unlock Account
                 </button>
             </div>
@@ -138,7 +138,7 @@
         <div *ngIf="fromAddress" class="row">
             <div class="form-group col-lg-3 col-md-3 col-sm-3">
                 <label for="pay-pw">From Wallet Password</label>
-                <input type="password" class="form-control " name="pay-pw" [(ngModel)]="password" placeholder="Your Wallet Address" />
+                <input type="password" class="form-control " name="pay-pw" [(ngModel)]="password" placeholder="Your Wallet password" />
             </div>
             <div class="form-group col-lg-3 col-md-3 col-sm-3" style="display:online;">
                 <label for="pay-nonce">Nonce</label>
@@ -155,7 +155,7 @@
                 <input class="form-control" name="card-CardName" [(ngModel)]="toAddress" placeholder="to Address" />
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2">
-                <button type="button" class="btn btn-primary btn-s" (click)="onCreateSignData()">
+                <button type="button" class="btn btn-info btn-s" (click)="onCreateSignData()">
                     2. Sign Transaction
                 </button>
             </div>

@@ -47,10 +47,10 @@ export class WalletDetailsComponent implements OnInit {
     private toBalance: string = null;
     private newToBalance: string = null;
     private nonce: string = null;
-    private password: string = 'Nas20180429';
+    private password: string = '';   
 
     // "value":"3000000000000000000"
-    private amount: string = '1';
+    private amount: string   = '0.1';
     private gasPrice: string = '100000';
 
     // For Setect Net
@@ -60,7 +60,7 @@ export class WalletDetailsComponent implements OnInit {
         { value: '2', name: "Mainnet" },
     ];
 
-    netType: string = '0';
+    netType: string = '2';
 
     mTxHash: string;
     Receipt: string;
@@ -113,7 +113,8 @@ export class WalletDetailsComponent implements OnInit {
         this.toBalance = null;
         this.newToBalance = null;
         this.nonce = null;
-        this.password = 'Nas20180429';
+        //this.password = 'Nas20180429';
+        this.password = null;
         this.mTxHash = null;
         this.Receipt = null;
         this.jsonAddressFile = null;
@@ -151,10 +152,15 @@ export class WalletDetailsComponent implements OnInit {
     // 1. 账户解锁 Button =================================================================================================================
     public onUnlockAccount() {
 
+        if (!this.password)
+        {
+            alert(" Please input From Wallete Password !");
+            return;    
+        }
+
         console.log("1. 账户解锁 - Start ---------------- ");
 
         let reader = new FileReader();
-
         reader.onload = () => {
 
             this.jsonFileContent = reader.result;
@@ -165,7 +171,7 @@ export class WalletDetailsComponent implements OnInit {
             var obj = JSON.parse(this.jsonFileContent);
             console.log(obj.address);
 
-            this.studentService.postAccount(this.jsonAddressFile).then((cardBalance: CardBalance) => {
+            this.studentService.postAccount({ "file": this.jsonFileContent, "pw": this.password }).then((cardBalance: CardBalance) => {
 
                 console.log("1. 账户解锁 - End ");
                 console.log(cardBalance);
@@ -181,8 +187,6 @@ export class WalletDetailsComponent implements OnInit {
 
         }
         reader.readAsText(this.jsonAddressFile);
-
-
     }
 
     // 2. 生成签名 Button ===============================================
@@ -285,7 +289,7 @@ export class WalletDetailsComponent implements OnInit {
                     this.hashResult = "1: 交易成功(success)";
                     break;
                 case 2:
-                    this.hashResult = "2: 交易待定(pending)";
+                    this.hashResult = "2: 交易待定(pending) - 可稍后继续点击 Check TX Status 按钮查看";
                     break;
             }
             //this.hashResult = result.status.toString();
