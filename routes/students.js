@@ -1,16 +1,13 @@
+
+
 var express = require("express");
 var router = express.Router();
 
-var mongojs = require("mongojs");
-var db = mongojs("mongodb://ming:123456@ds161059.mlab.com:61059/institutedb", ['students']);
+//var mongojs = require("mongojs");
+//var db = mongojs("mongodb://ming:123456@ds161059.mlab.com:61059/institutedb", ['students']);
 //var db = mongojs("institutedb", ['students']);
 
-var myMongo = require("../db");
-
-// var Nebulas = require("./indexNeb");
-// var Neb = Nebulas.Neb;
-// var neb = new Neb();
-
+//var myMongo = require("../db");
 
 var Nebulas = require("nebulas"),
 Transaction = Nebulas.Transaction,
@@ -19,9 +16,7 @@ Unit = Nebulas.Unit,
 neb = new Nebulas.Neb(),
 //validateAll = uiBlock.validate(),
 //gLastGenerateInfo = {},
-gAccount, gTx;
-
-
+gTx;
 
 
 neb.setRequest(new Nebulas.HttpRequest("https://testnet.nebulas.io"));
@@ -32,51 +27,8 @@ var account;
 
 var mTxHash; // For transaction 
 
-
-/* Just for testing
-neb.api.getAccountState("n1PfySvoUyNfWg6xKDohK96TCWbSxQXLdwB").then(function (state) {
-    console.log(state);
-}).catch(function (err) {
-    console.log(err);
-});
-*/
-
 // getAccountState ----------------------------------
 router.get("/students", (req, res, next) => {
-
-    /*
-    var Account = Nebulas.Account;
-
-    var account = Account.NewAccount();
-    //console.log(account.getPrivateKeyString());
-    //console.log(account.getPublicKeyString());
-    //console.log(account.getAddressString());
-    //console.log(Account.isValidAddress(account.getAddressString()));
-    
-    var key = account.toKey("passphrase");
-    //console.log(JSON.stringify(key));
-    //console.log("********************");
-    
-    var a1 = new Account();
-    a1 = a1.fromKey(key, "passphrase");
-    console.log(a1.getPrivateKeyString());
-    console.log(account.getAddressString());
-    console.log("********************");
-
-    var Transaction = Nebulas.Transaction;
-    var tx = new Transaction(100, account, account, "10", 1);
-    tx.signTransaction();
-    console.log("hash: " + tx.hash.toString("hex"));
-    console.log("sign: " + tx.sign.toString("hex"));
-    console.log("tx: " + tx.toString());
-    console.log("---------------");
-    var data = tx.toProtoString();
-    console.log("data: " + data);
-    tx.fromProto(data);
-    console.log("tx: " + tx.toString());
-    console.log("address: "+tx.from.getAddressString());
-    return;
-*/
 
     neb.api.getAccountState("n1PfySvoUyNfWg6xKDohK96TCWbSxQXLdwB").then(function (state) {
         res.json(state);
@@ -107,10 +59,26 @@ router.post("/students", (req, res, err) => {
 
     console.log("1. 账户解锁 ");
     console.log(fileJson);
+    console.log(fileJson.address);
 
-    Account = Nebulas.Account;
-    account = Account.NewAccount();
-    account.fromKey(fileJson, 'Nas20180429');
+    //Account = Nebulas.Account;  Old way
+    var Account = require("nebulas").Account;
+
+    //account = Account.NewAccount();
+
+    console.log("mFileJson ###################################################### ");
+    
+    // account.fromKey(fileJson, 'Nas20180429');   Old way ???
+    var account = Account.fromAddress(fileJson.address);  // #1. New Way  
+    console.log(account);
+    
+    account.fromKey(fileJson, 'Nas20180429');             //  #2. 1,2 all is right, can use one to get account, but no privKey and pubKey info, just has address info
+                                                          //  but, can 实现交易 Transaction ！！
+    // Get from web-wallet:
+    // privKey: Uint8Array(32) [173, 247, 98, 188, 75, 192, 99, 100, 69, 2, 71, 21, 235, 100, 124, 48, 163, 115, 94, 249, 251, 193, 183, 120, 144, 122, 90, 39, 178, 221, 250, 2]
+    // pubKey: Uint8Array(64) [229, 104, 234, 30, 214, 114, 68, 167, 157, 232, 168, 94, 11, 139, 122, 134, 165, 211, 125, 55, 157, 143, 225, 133, 130, 229, 224, 133, 240, 238, 37, 82, 151, 131, 227, 94, 179, 165, 243, 183, 69, 220, 245, 88, 110, 58, 122, 175, 150, 164, 115, 182, 181, 150, 63, 205, 57, 233, 74, 141, 204, 110, 224, 241]
+
+    console.log(account);
 
     neb.api.getAccountState(account.getAddressString()).then(function (state) {
         res.json(state);
@@ -154,10 +122,13 @@ router.put("/students/:id", (req, res, next) => {
     // console.log(" New gTx.toProtoString(): +++++++++++++++++++++ +++++++++++++++++++");
     // console.log(gTx.toProtoString());   
 
-    // For waiting: gTx.signTransaction() get result !
-    neb.api.getAccountState(account.getAddressString()).then(function (state) {
+    // For waiting: gTx.signTransaction() get result, same time get to Address info
+    neb.api.getAccountState(toAddress).then(function (state) {
 
-            res.json(gTx.toProtoString());
+            //res.json(gTx.toProtoString());
+            
+            // For return more info
+            res.json({'signed': gTx.toProtoString(), 'toAccount':state});
 
         }).catch(function (err) {
             res.send(err);

@@ -1,16 +1,25 @@
 
+/****************
+ * 
+ *  By \routes\card.js (Node.js API service, to access Mongo DB for card/wallet/account info )
+ *  
+ *  Used at card-list and card-details component
+ * 
+ ***************/
+
+
 import { Injectable } from '@angular/core';
 import { Card, CardBalance } from '../models/defineClass';
 import { Http, Response } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import 'rxjs/add/operator/toPromise';
+//import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class CardService {
 
-    //private cardsUrl = '/api/cards';                            // For Internet !!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private cardsUrl = 'http://127.0.0.1:3000/api/cards';     // For local debug, need open CORS on Chrome 
+    private cardsUrl = '/api/cards';                            // For Internet !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //private cardsUrl = 'http://127.0.0.1:3000/api/cards';     // For local debug, need open CORS on Chrome 
 
     constructor (private http: HttpClient) {}
 

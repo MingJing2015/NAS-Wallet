@@ -3,8 +3,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 
-import { CardListComponent } from './cards/card-list/card-list.component';
-import { WalletDetailsComponent } from './wallets/wallet-details/wallet-details.component';  
+import { CardListComponent }        from './views/card-list/card-list.component';
+import { WalletDetailsComponent }   from './views/wallet-details/wallet-details.component';  
+import { ContractDetailsComponent }   from './views/contract-details/contract-details.component';  
 
 // @NgModule({
 //   imports: [
@@ -15,8 +16,9 @@ import { WalletDetailsComponent } from './wallets/wallet-details/wallet-details.
 
 const routes: Routes = [
     { path: '', redirectTo: 'CardList', pathMatch: 'full' },
-    { path: 'CardList', component: CardListComponent },
-    { path: 'WalletDetails',  component: WalletDetailsComponent }
+    { path: 'CardList',         component: CardListComponent },
+    { path: 'WalletDetails',    component: WalletDetailsComponent },
+    { path: 'ContractDetails',  component: ContractDetailsComponent }
 ];
 
 

@@ -7,13 +7,14 @@ var myDB = mongojs("mongodb://ming:123456@ds161059.mlab.com:61059/institutedb", 
 
 //var myDB = require("../db");
 
-var Nebulas = require("./indexNeb");
+/*
+var Nebulas = require("./contract");
 
 var Neb = Nebulas.Neb;
 var neb = new Neb();
 
 neb.setRequest(new Nebulas.HttpRequest("https://testnet.nebulas.io"));   
-
+*/
 
 router.get("/cards", (req, res, next) => {
     //res.send("STUDENTS API Page");

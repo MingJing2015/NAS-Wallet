@@ -1,16 +1,25 @@
 
+
+/****************
+ * 
+ *  By \routes\student.js (Nebulas.js lib functions to access NAS wallet/account info )
+ *  
+ *  Used at wallet-list and wallet-details components
+ * 
+ ***************/
+
 import { Injectable } from '@angular/core';
 import { Student, Card, CardBalance, signedTransaction } from '../models/defineClass';
 import { Http, Response } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import 'rxjs/add/operator/toPromise';
+//import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class StudentService {
 
-    //private studentsUrl = '/api/students';                              // For internet  !!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private studentsUrl = 'http://127.0.0.1:3000/api/students';       // For local debug, need open CORS on Chrome 
+    private studentsUrl = '/api/students';                              // For internet  !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //private studentsUrl = 'http://127.0.0.1:3000/api/students';       // For local debug, need open CORS on Chrome 
 
     constructor(private http: HttpClient) { }
 

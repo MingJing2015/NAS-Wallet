@@ -32,5 +32,51 @@ https://pacific-plains-55185.herokuapp.com/
 https://github.com/MingJing2015/NAS-DApp/tree/master/NAS-DApp
 
 
+Look Mean.js Document:
+•	Copy file server.js from mongoexpress app to root of angular-express app.
+•	Change static location from client to src around line 20
+•	Copy file .bowerrc from mongoexpress app to root of angular-express app.
+•	Edit .bowerrc change client to src
+•	Copy folder db, routes and views from mongoexpress app to root of angular-express app.
+•	Edit routes/students.js and make the URLs consistent by making all endpoints /api/students
+
+•	( /students => /api/students )
+
+•	Change the “start” script in your package.json to: "start": "node server.js"
+
+
+
+## Heroku (first time)
+Download and install Heroku-CLI from: npm install (  npm install -g heroku ), then publish server end to Heroku  [ brew install heroku/brew/heroku     - for Mac Pro]
+
+    git init
+    git add .
+    git commit -m "initial commit"
+    heroku login
+    heroku create	
+    git push heroku master
+    heroku open
+
+
+## Local Debug way: 
+1. ng serve   -  localhost:4200
+2. nodemon    -  Server started on port number 3000
+
+
+##1. Before Deploy to heroku need : 
+1. In student.service.ts: 
+    private studentsUrl = '/api/students';                              // For internet  
+    //private studentsUrl = 'http://127.0.0.1:3000/api/students';       // For local debug, need open CORS on Chrome 
+
+2. In card.service.ts
+    private cardsUrl = '/api/cards';                            // For Internet 
+    //private cardsUrl = 'http://127.0.0.1:3000/api/cards';     // For local debug, need open CORS on Chrome  
+
+3.  git add .
+    git commit -m "initial create"
+    git push heroku master
+    heroku open
+
+
 
 
