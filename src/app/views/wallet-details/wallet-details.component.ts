@@ -59,7 +59,6 @@ export class WalletDetailsComponent implements OnInit {
         { value: '1', name: "Local nodes" },
         { value: '2', name: "Mainnet" },
     ];
-
     netType: string = '2';
 
     mTxHash: string;

@@ -18,23 +18,35 @@ neb = new Nebulas.Neb(),
 //gLastGenerateInfo = {},
 gTx;
 
+//var jsonFile; 
+//var pw; 
+var password;
 
-neb.setRequest(new Nebulas.HttpRequest("https://testnet.nebulas.io"));
+
+neb.setRequest(new Nebulas.HttpRequest("https://mainnet.nebulas.io"));
+//neb.setRequest(new Nebulas.HttpRequest("https://testnet.nebulas.io"));
+
+netID = 1;
+//netID = 1001;
 
 // Global !!
 var Account;
 var account;
 
-var mTxHash; // For transaction 
+//var mTxHash; // For transaction 
 
 // getAccountState ----------------------------------
 router.get("/students", (req, res, next) => {
 
-    neb.api.getAccountState("n1PfySvoUyNfWg6xKDohK96TCWbSxQXLdwB").then(function (state) {
-        res.json(state);
-    }).catch(function (err) {
-        res.send(err);
-    });
+    //pw = req.body;
+    //console.log(pw);
+    //res.json("Ok");
+
+    // neb.api.getAccountState("n1PfySvoUyNfWg6xKDohK96TCWbSxQXLdwB").then(function (state) {
+    //     res.json(state);
+    // }).catch(function (err) {
+    //     res.send(err);
+    // });
 
 });
 
@@ -45,6 +57,10 @@ router.get("/students/:id", (req, res, next) => {
     console.log(req.params.id);
 
     neb.api.getAccountState(req.params.id).then(function (state) {
+
+        console.log("Into students.js neb.api.getAccountState() ....");
+        console.log(state);
+
         res.json(state);
     }).catch(function (err) {
         res.send(err);
@@ -55,11 +71,15 @@ router.get("/students/:id", (req, res, next) => {
 // 账户解锁 unluck Account by json file -----------------------------------------------------
 router.post("/students", (req, res, err) => {
 
-    var fileJson = req.body;
+    //var fileJson = req.body;
+    var data = req.body;
+    password = data.pw;
 
     console.log("1. 账户解锁 ");
-    console.log(fileJson);
-    console.log(fileJson.address);
+    console.log(data.file);
+
+    var obj = JSON.parse(data.file);
+    console.log(obj.address);
 
     //Account = Nebulas.Account;  Old way
     var Account = require("nebulas").Account;
@@ -69,10 +89,11 @@ router.post("/students", (req, res, err) => {
     console.log("mFileJson ###################################################### ");
     
     // account.fromKey(fileJson, 'Nas20180429');   Old way ???
-    var account = Account.fromAddress(fileJson.address);  // #1. New Way  
+    var account = Account.fromAddress(obj.address);  // #1. New Way  
     console.log(account);
     
-    account.fromKey(fileJson, 'Nas20180429');             //  #2. 1,2 all is right, can use one to get account, but no privKey and pubKey info, just has address info
+    //account.fromKey(fileJson, 'Nas20180429');             //  #2. 1,2 all is right, can use one to get account, but no privKey and pubKey info, just has address info
+    account.fromKey(data.file, data.pw);             //  #2. 1,2 all is right, can use one to get account, but no privKey and pubKey info, just has address info
                                                           //  but, can 实现交易 Transaction ！！
     // Get from web-wallet:
     // privKey: Uint8Array(32) [173, 247, 98, 188, 75, 192, 99, 100, 69, 2, 71, 21, 235, 100, 124, 48, 163, 115, 94, 249, 251, 193, 183, 120, 144, 122, 90, 39, 178, 221, 250, 2]
@@ -81,6 +102,9 @@ router.post("/students", (req, res, err) => {
     console.log(account);
 
     neb.api.getAccountState(account.getAddressString()).then(function (state) {
+
+        console.log("Into ............... ");
+        console.log(state);
         res.json(state);
     }).catch(function (err) {
         res.send(err);
@@ -95,7 +119,8 @@ router.put("/students/:id", (req, res, next) => {
     console.log("2. 生成签名 ");
 
     var fileJson  = req.body;
-    var info      = req.params.id;
+    //var data  = req.body;
+    var info  = req.params.id;
 
     var toAddress = info.split(' ')[0];
     var nonce     = info.split(' ')[1];
@@ -104,18 +129,22 @@ router.put("/students/:id", (req, res, next) => {
     console.log("Value: " + value);
     console.log(nonce);
     console.log(toAddress);
-    console.log(fileJson);
+    //console.log(data);
     
     Account = Nebulas.Account;              // Global 
     Transaction = Nebulas.Transaction;      //
 
     account = Account.NewAccount();
-    account.fromKey(fileJson, 'Nas20180429');
+    
+    //account.fromKey(fileJson, 'Nas20180429');
+    account.fromKey(fileJson, password);
+    //account.fromKey(data.file, data.pw);
 
     gas_price = 1000000
     gas_limit = 200000;
 
-    gTx = new Transaction(1001, account, toAddress, Number(value), Number(nonce), gas_price, gas_limit);
+    //gTx = new Transaction(1001, account, toAddress, Number(value), Number(nonce), gas_price, gas_limit);  // testnet ?????
+    gTx = new Transaction(this.netID, account, toAddress, Number(value), Number(nonce), gas_price, gas_limit);    // mainnet
     gTx.signTransaction();
 
     // console.log(" ");
@@ -148,7 +177,7 @@ router.delete("/students/:id", (req, res, next) => {
     .then(function (resp) {
 
         //console.log("sendRawTransaction resp: " + JSON.stringify(resp));
-        mTxHash = resp.txhash;
+        var mTxHash = resp.txhash;
 
         console.log(" mTxHash: ================== ");
         console.log(mTxHash);

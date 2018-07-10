@@ -2,7 +2,9 @@
 
 /****************
  * 
- *  By Nebulas API service, to access wallet/account info )
+ *  By Nebulas HTTP API service, to access wallet/account info 
+ * 
+ * do not use Node.js APIs 
  *  
  *  Used at contract-details component
  * 
@@ -18,28 +20,25 @@ import { NetState, PwdChangeStatusModel, Card, CardBalance } from '../models/def
 export class RemoteService {
 
     public site: string;
+    public url: string;
+
+    headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });   // For mean
+
+    
+    options = new RequestOptions({ 'headers': this.headers });
 
     constructor(private http: Http) {
 
         this.site = "https://pacific-plains-55185.herokuapp.com/";
-
     }
 
     getNetState(): Promise<NetState | any> {
 
-        //let url  = this.site + 'api/students';
+        this.url = 'https://mainnet.nebulas.io/v1/user/nebstate';
+        //his.url = 'https://testnet.nebulas.io/v1/user/nebstate';
+        //this.url =  'http://localhost:8685/v1/user/nebstate';
 
-        let url = 'https://mainnet.nebulas.io/v1/user/nebstate';
-        //let url = 'https://testnet.nebulas.io/v1/user/nebstate';
-        //let url =  'http://localhost:8685/v1/user/nebstate';
-
-        console.log(url);
-
-        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });   // For mean
-
-        let options = new RequestOptions({ headers: headers });
-
-        return this.http.get(url, options)
+        return this.http.get(this.url, this.options)
             .toPromise()
             .then(response => response.json() as NetState)
             .catch(this.handleError);
@@ -52,12 +51,7 @@ export class RemoteService {
         //let url = 'http://localhost:8685/v1/user/accountstate';
         let url = 'https://testnet.nebulas.io/v1/user/accountstate';
 
-        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });   // For mean
-
-        let options = new RequestOptions({ headers: headers });
-
-        //return this.http.post(url, {"address":"n1MjR3J28LPYGSVNGYC8DWsM7VJaAqqPnWH"}, options)  // local address
-        return this.http.post(url, { "address": address }, options)    // Test net address
+        return this.http.post( url, { "address": address }, this.options)   
             .toPromise()
             //.then(response => response.json() as CardBalance)
             .then(response => this.parsePwdChangeData(response))

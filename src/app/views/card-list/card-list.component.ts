@@ -12,7 +12,6 @@ export class Result {
     result: CardBalance;
 }
 
-
 @Component({
     selector: 'card-list',
     templateUrl: './card-list.component.html',
@@ -20,30 +19,27 @@ export class Result {
     providers: [CardService, RemoteService]
 })
 
-
 export class CardListComponent implements OnInit {
 
     cards: Card[]
     selectedCard: Card
 
     netState: NetState;
-
     cardBalance: CardBalance;
-
     resultData: Result;
 
     private balance: string = null;
     private nonce: string = null;
 
-
     // For Setect Net
     netTypeArr = [
-        { value: '0', name: "Testnet" },
-        { value: '1', name: "Local nodes" },
-        { value: '2', name: "Mainnet" },
+        { 'value': '0', 'name': "Testnet" },
+        { 'value': '1', 'name': "Local nodes" },
+        { 'value': '2', 'name': "Mainnet" },
     ];
 
-    netType: string = '2';
+    //netType: string = '2';
+    netType: string = '0';
 
     Chain_ID: number;
     Height: string;
@@ -76,7 +72,6 @@ export class CardListComponent implements OnInit {
     selectCard(card: Card) {
 
         this.selectedCard = card;
-
         this.balance = '';
         this.nonce = '';
 
@@ -84,7 +79,6 @@ export class CardListComponent implements OnInit {
         this.remoteService.getAccountState(card.CardAddress).then((cardBalance: PwdChangeStatusModel) => {
 
             console.log("Got from cardService.refreashCard of card-details.ts ");
-
             console.log(cardBalance);
             //console.log(cardBalance._body);
 
@@ -113,7 +107,7 @@ export class CardListComponent implements OnInit {
         //this.remoteService.getNetState().then((netState: NetState) => {
         this.remoteService.getNetState()
             //.then((netState: PwdChangeStatusModel) => this.netState = netState)
-            .then((netState: NetStatusModel) => { 
+            .then((netState: NetStatusModel) => {
                 console.log(netState);
 
                 this.Chain_ID = netState.result.chain_id;
@@ -123,7 +117,7 @@ export class CardListComponent implements OnInit {
                 this.Synchronized = netState.result.synchronized;
                 this.Tail = netState.result.tail;
                 this.Version = netState.result.version;
-            } );
+            });
     }
 
     createNewCard() {

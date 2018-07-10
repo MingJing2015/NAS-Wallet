@@ -13,7 +13,11 @@ var Nebulas = require("nebulas"),
     gAccount, gTx;
 
 
-neb.setRequest(new Nebulas.HttpRequest("https://testnet.nebulas.io"));
+neb.setRequest(new Nebulas.HttpRequest("https://mainnet.nebulas.io"));
+//neb.setRequest(new Nebulas.HttpRequest("https://testnet.nebulas.io"));
+
+var netID = 1;
+//var netID = 1001;
 
 // Global !!
 var Account;
@@ -21,7 +25,7 @@ var account;
 var mTxHash; // For transaction 
 
 
-// getAccountState ----------------------------------
+// Testing : getAccountState ----------------------------------
 router.get("/contracts", (req, res, next) => {
 
     // 1. 查看合约信息 ........ 
@@ -72,8 +76,10 @@ router.get("/contracts/:id", (req, res, next) => {
 });
 
 
-// 账户解锁 unluck Account by json file -----------------------------------------------------
+// #1. 账户解锁 unluck Account by json file -----------------------------------------------------
 router.post("/contracts", (req, res, err) => {
+
+    // unused ???
 
     var fileJson = req.body;
 
@@ -149,7 +155,7 @@ router.post("/contracts/:id", (req, res, next) => {
     console.log(" ");
     console.log("3. 执行合约 Call()  start... ######################################################");
 
-    var info = req.params.id;
+    var info = req.params.id;   // can not include ? in req.params.id;  !!!
     console.log(info);
 
     var toAddress = info.split('`')[0];   // should contract Address 
@@ -160,7 +166,7 @@ router.post("/contracts/:id", (req, res, next) => {
     var argumentss = info.split('`')[5];
 
     var fileJson = req.body;
-    //console.log(fileJson);
+    console.log(fileJson.address);
 
     Account = Nebulas.Account;              // Global 
     Transaction = Nebulas.Transaction;      //
@@ -181,36 +187,53 @@ router.post("/contracts/:id", (req, res, next) => {
     value = Utils.toBigNumber(valueNum);
 
     console.log("tempObj: -------------------------------------------  ");
-    //console.log(value);      
-    //console.log(account);      
-
     var tempObj = { 'function': functions, 'args': argumentss };
     console.log(tempObj);
 
-    //gTx = new Transaction(1001, account, toAddress, value, Number(nonce), gas_price, gas_limit, { function: "save", args: "[0]" });
-    gTx = new Transaction(1001, account, toAddress, value, Number(nonce), gas_price, gas_limit, { 'function': functions, 'args': argumentss });
-    gTx.signTransaction();
+    neb.api.getAccountState(fileJson.address)
+        .then(function (state) {
 
+            console.log("查看合约、交易结果信息 ... get form status real Nonce: ");
+            console.log(state.nonce);
+            //var _nonce = Number(state.nonce) + 1;
 
-    neb.api.sendRawTransaction(gTx.toProtoString()) //TODO: GTX为空是 抛异常
-        .then(function (resp) {
+            console.log(" Parameter nonce: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    ");
+            console.log(nonce);
 
-            //console.log("sendRawTransaction resp: " + JSON.stringify(resp));
-            mTxHash = resp.txhash;
+            //gTx = new Transaction(this.netID, account, toAddress, value, Number(nonce), gas_price, gas_limit, { 'function': functions, 'args': argumentss });
+            gTx = new Transaction(this.netID, account, toAddress, value, Number(nonce), gas_price, gas_limit, tempObj);
 
-            console.log("发送交易 end, mTxHash: ================== ");
-            console.log(mTxHash);
+            console.log(gTx);
 
-            neb.api.getTransactionReceipt(mTxHash).then(function (state) {
+            //gTx = new Transaction( 1001, account, toAddress, value, Number(nonce), gas_price, gas_limit, tempObj);
+            gTx.signTransaction();
 
-                console.log(" Receipt: ~~~~~~~~~~~~~~~~~` ");
-                console.log(state);
+            console.log(" PgTx.toProtoString() : %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    ");
+            console.log(gTx.toProtoString());
 
-                res.json(state);
+            neb.api.sendRawTransaction(gTx.toProtoString()) //TODO: GTX为空是 抛异常
+                .then(function (resp) {
 
-            }).catch(function (err) {
-                res.send(err);
-            });
+                    //console.log("sendRawTransaction resp: " + JSON.stringify(resp));
+                    mTxHash = resp.txhash;
+
+                    console.log("发送交易 end, mTxHash: ================== ");
+                    console.log(mTxHash);
+
+                    neb.api.getTransactionReceipt(mTxHash).then(function (state) {
+
+                        console.log(" Receipt: ~~~~~~~~~~~~~~~~~` ");
+                        console.log(state);
+
+                        res.json(state);
+
+                    }).catch(function (err) {
+                        res.send(err);
+                    });
+                });
+
+        }).catch(function (err) {
+            res.send(err);
         });
 });
 

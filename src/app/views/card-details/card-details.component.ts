@@ -27,9 +27,6 @@ export class CardDetailsComponent {
   deleteHandler: Function;
 
 
-
-  
-
   constructor (private cardService: CardService) {
   }
 
